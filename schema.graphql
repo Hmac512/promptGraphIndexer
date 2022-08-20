@@ -1,5 +1,25 @@
-type ExampleEntity @entity {
+type Credential @entity {
   id: ID!
-  count: BigInt!
-  blsPublicKey: String! # string
+  encryptedDocument: String! # string
+  credentialHolderPublicKey: String! # string
+  timestamp: BigInt! # int
+  latestVerification: Verification @relation(name: "LatestVerification")
 }
+
+type Verification @entity {
+  id: ID!
+  credential: Credential! @relation(name: "Credential")
+  encryptedDocument: String! # string
+  verifierPublicKeyHash: String! # string
+  timestamp: BigInt! # int
+  previousVerification: Verification @relation(name: "PreviousVerification")
+  nextVerification: Verification @derivedFrom(field: "previousVerification")
+}
+
+type IssuerPublicKeys @entity {
+  id: ID!
+  BLSPublicKey: String # string
+  PublicKey: String # string
+}
+
+
