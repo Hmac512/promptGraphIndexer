@@ -1,0 +1,35 @@
+specVersion: 0.0.1
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Identity
+    network: rinkeby
+    source:
+      address: "0xc11B96C03E50172a200A6dd1229BB780cBbf1a4e"
+      abi: Identity
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - ChangedBLSPublicKey
+        - ChangedPublicKey
+        - MintCredential
+        - MintVerification
+        - OwnershipTransferred
+      abis:
+        - name: Identity
+          file: ./abis/Identity.json
+      eventHandlers:
+        - event: ChangedBLSPublicKey(string)
+          handler: handleChangedBLSPublicKey
+        - event: ChangedPublicKey(string)
+          handler: handleChangedPublicKey
+        - event: MintCredential(uint256,string,string,uint256)
+          handler: handleMintCredential
+        - event: MintVerification(uint256,uint256,uint256,string,uint256,uint256)
+          handler: handleMintVerification
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+      file: ./src/identity.ts
