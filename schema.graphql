@@ -4,6 +4,7 @@ type Credential @entity {
   credentialHolderPublicKey: String! # string
   timestamp: BigInt! # int
   latestVerification: Verification @relation(name: "LatestVerification")
+  verifications: [Verification!] @derivedFrom(field: "credential")
 }
 
 type Verification @entity {
@@ -16,10 +17,13 @@ type Verification @entity {
   nextVerification: Verification @derivedFrom(field: "previousVerification")
 }
 
-type IssuerPublicKeys @entity {
+type IssuerBLSPublicKey @entity {
   id: ID!
   BLSPublicKey: String # string
   PublicKey: String # string
 }
-
+type IssuerPublicKey @entity {
+  id: ID!
+  PublicKey: String # string
+}
 

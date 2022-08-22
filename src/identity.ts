@@ -10,34 +10,9 @@ import {
 import {
   Credential,
   Verification,
-  IssuerPublicKeys,
+  IssuerBLSPublicKey,
+  IssuerPublicKey,
 } from "../generated/schema";
-
-export function handleChangedBLSPublicKey(event: ChangedBLSPublicKey): void {
-  // Entities can be loaded from the store using a string ID; this ID
-  // needs to be unique across all entities of the same type
-  let publicKey = IssuerPublicKeys.load("0");
-  // Entities only exist after they have been saved to the store;
-  // `null` checks allow to create entities on demand
-  if (!publicKey) {
-    publicKey = new IssuerPublicKeys("0");
-  }
-  publicKey.BLSPublicKey = event.params.blsPublicKey;
-  publicKey.save();
-}
-
-export function handleChangedPublicKey(event: ChangedPublicKey): void {
-  // Entities can be loaded from the store using a string ID; this ID
-  // needs to be unique across all entities of the same type
-  let publicKey = IssuerPublicKeys.load("0");
-  // Entities only exist after they have been saved to the store;
-  // `null` checks allow to create entities on demand
-  if (!publicKey) {
-    publicKey = new IssuerPublicKeys("0");
-  }
-  publicKey.PublicKey = event.params.publicKey;
-  publicKey.save();
-}
 
 export function handleMintCredential(event: MintCredential): void {
   // Entities can be loaded from the store using a string ID; this ID
@@ -51,6 +26,8 @@ export function handleMintCredential(event: MintCredential): void {
   // Entities can be written to the store with `.save()`
   credential.save();
 
+  // ! We can pull data off of the EVM easily.
+  // ! We can also pull data off of IPFS: https://thegraph.com/docs/en/developing/assemblyscript-api/#ipfs-api
   // Note: If a handler doesn't require existing field values, it is faster
   // _not_ to load the entity from the store. Instead, create it fresh with
   // `new Entity(...)`, set the fields that should be updated and save the
@@ -92,3 +69,34 @@ export function handleMintVerification(event: MintVerification): void {
 }
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
+
+const blsPubKeyObjId = "0";
+const pubKeyObjId = "0";
+
+export function handleChangedBLSPublicKey(event: ChangedBLSPublicKey): void {
+  // Entities can be loaded from the store using a string ID; this ID
+  // needs to be unique across all entities of the same type
+
+  let publicKey = IssuerBLSPublicKey.load(blsPubKeyObjId);
+  // Entities only exist after they have been saved to the store;
+  // `null` checks allow to create entities on demand
+  if (!publicKey) {
+    publicKey = new IssuerBLSPublicKey(blsPubKeyObjId);
+  }
+  publicKey.BLSPublicKey = event.params.blsPublicKey;
+  publicKey.save();
+}
+
+export function handleChangedPublicKey(event: ChangedPublicKey): void {
+  // Entities can be loaded from the store using a string ID; this ID
+  // needs to be unique across all entities of the same type
+  let publicKey = IssuerPublicKey.load(pubKeyObjId);
+  // Entities only exist after they have been saved to the store;
+  // `null` checks allow to create entities on demand
+  if (!publicKey) {
+    publicKey = new IssuerPublicKey(pubKeyObjId);
+  }
+
+  publicKey.PublicKey = event.params.publicKey;
+  publicKey.save();
+}
